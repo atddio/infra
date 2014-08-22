@@ -23,7 +23,5 @@ RUN cabal install cabal-install
 
 RUN echo "export PATH=\$HOME/.cabal/bin:\$PATH" >> ~/.bashrc
 
-WORKDIR /home/curry
-
-# expose one port for web application
-EXPOSE 3000
+# reset user to root
+USER root
