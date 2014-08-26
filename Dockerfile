@@ -7,7 +7,7 @@ MAINTAINER arnaud@capital-match.com
 RUN apt-get update
 RUN apt-get upgrade -y
 
-RUN apt-get install -y build-essential haskell-platform libncurses-dev libpq-dev git
+RUN apt-get install -y build-essential ghc cabal-install libncurses-dev libpq-dev git
 RUN locale-gen en_US.UTF-8
 
 # create dedicated user for dev
