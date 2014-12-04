@@ -42,8 +42,9 @@ RUN \
   lein
 
 # create dedicated user for dev
-RUN useradd -m -s /bin/bash curry
-RUN chown -R curry /home/curry
+RUN groupadd -g 1001 curry \
+    && useradd -g 1001 -u 1001 -m -s /bin/bash curry \
+    && chown -R curry /home/curry
 
 # install cabal stuff as user curry
 USER curry

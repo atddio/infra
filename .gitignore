@@ -15,5 +15,6 @@ cabal.sandbox.config
 static/combined
 static/fay-runtime.js
 static/faygen-*.js
-
+_*
 *~
+images
