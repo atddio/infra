@@ -1,12 +1,20 @@
 # Dockerfile for setting up a working haskell development environment
 #
-FROM stackbrew/ubuntu:saucy
+FROM ubuntu:trusty 
 MAINTAINER arnaud@capital-match.com
 
-RUN apt-get update
-RUN apt-get upgrade -y
+RUN apt-get update && apt-get install -y software-properties-common && \
+    add-apt-repository -y ppa:hvr/ghc && \
+    apt-get update && apt-get install -y ghc-7.8.3 cabal-install-1.20
 
-RUN apt-get install -y build-essential ghc cabal-install libncurses-dev libpq-dev git
+ENV LANG C.UTF-8
+ENV PATH /opt/cabal/1.20/bin:/opt/ghc/7.8.3/bin:$PATH
+
+RUN cabal update
+
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y build-essential git locales
 RUN locale-gen en_US.UTF-8
 
 # The following 
@@ -14,7 +22,9 @@ RUN locale-gen en_US.UTF-8
 # Java is needed in order to build UI
 RUN \
   DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common python-software-properties && \
-  add-apt-repository -y ppa:webupd8team/java && \
+  echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee /etc/apt/sources.list.d/webupd8team-java.list && \
+  echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee -a /etc/apt/sources.list.d/webupd8team-java.list && \
+  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886 && \
   apt-get update -q && \
   echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
   echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections && \
@@ -46,15 +56,13 @@ RUN groupadd -g 1001 curry \
     && useradd -g 1001 -u 1001 -m -s /bin/bash curry \
     && chown -R curry /home/curry
 
+RUN apt-get install zlib1g-dev libtinfo-dev
 # install cabal stuff as user curry
 USER curry
 ENV HOME  /home/curry
 
-RUN cabal update
-RUN cabal install cabal-install
-
-# needed for haskell-src-exts
-RUN cabal install happy
+RUN cabal update && cabal install cabal-install && \
+    cabal -j8 install happy
 
 RUN echo "export PATH=\$HOME/.cabal/bin:\$PATH" >> ~/.bashrc
 
