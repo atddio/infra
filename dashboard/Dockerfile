@@ -5,7 +5,7 @@
 # 
 # Inspired by: https://github.com/patrickod/riemann-docker/blob/master/Dockerfile
 # Reference: http://riemann.io/quickstart.html
-FROM stackbrew/ubuntu:saucy
+FROM ubuntu:trusty
 MAINTAINER arnaud@capital-match.com
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -14,6 +14,7 @@ RUN apt-get upgrade -y
 
 # Ruby stuff
 RUN apt-get install -y build-essential ruby1.9.1 ruby1.9.1-dev
+RUN apt-get install -y libz-dev
 
 # Expose the ports for inbound events and websockets
 EXPOSE 4567
